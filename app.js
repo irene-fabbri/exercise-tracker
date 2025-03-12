@@ -1,7 +1,7 @@
 const express = require(`express`);
 const cors = require('cors');
-const DB = require('./connect')
-var bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
+const DB = require('./connect');
 
 const app = express ();
 
@@ -27,7 +27,28 @@ app.use((req, res, next) => {
 });
 
 app.get('/api/users',  (req,res) => {
+  console.log(DB);
   // TODO: get a list of all users (array of obj with user_id and username)
+  res.set('content-type', 'application/json');
+  const sql = `SELECT * FROM users`;
+  let data = {users:[]};
+
+  DB.all(sql,[], (err,rows)=>{
+    if(err){
+      const error = new Error('Error retrieving users');
+      error.status = 500;
+      error.code = 'USER_RETRIEVAL_ERROR';
+      error.title = 'User Retrieval Error';
+      error.detail = 'There was an issue retrieving users from the database.';
+      return next(error);
+    }
+
+    rows.forEach(row => {
+      // console.log(row);
+      data.users.push({'username': row.username,'_id':row.user_id});
+    });
+    res.status(200).json(data);
+  })
 });
 
 app.post('/api/users',  (req,res) => {
@@ -48,6 +69,20 @@ app.use((req, res, next) => {
   const error = new Error('Not Found');
   error.status = 404;
   next(error);
+});
+// ERROR HANDLING
+app.use((error, req, res, next) => {
+  res.status(error.status || 500);
+  res.json({
+    "errors": [
+      {
+          "status": `${error.status || 500}`,
+          "code": `${error.code || 'UNKNOWN_ERROR'}`,
+          "title": `${error.title || 'An unexpected error occurred'}`,
+          "detail": `${error.detail || error.message || 'No additional details available.'}`
+      }
+  ]
+  });
 });
 
 // Export the app instance for testing
