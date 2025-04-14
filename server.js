@@ -5,4 +5,4 @@ app.listen(PORT, () => {
     console.log("Server Listening on PORT:", PORT);
 });
 
-// the listening part should be separated so that i can test app.js
+// the listening part is separated so that i can test app.js
