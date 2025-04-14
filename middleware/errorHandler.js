@@ -8,7 +8,6 @@ function errorHandler(error, req, res, next) {
         detail: error.detail || error.message || 'No additional details available.'
     };
 
-    // You can also log the error here if needed
     console.error(`[ERROR]: ${response.title} - ${response.detail}`);
 
     res.status(status).json(response);

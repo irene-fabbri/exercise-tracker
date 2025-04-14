@@ -1,7 +1,6 @@
 const DB = require('../config/connect');
 const md5 = require('js-md5');
 const createError = require('../utils/createError');
-const { createUserSchema } = require('../validators/userValidator');
 
 
 class Users {
@@ -11,18 +10,6 @@ class Users {
     }
   
     static create(username){
-        // Validate input
-        const { error } = createUserSchema.validate({ username });
-
-        if (error) {
-            return Promise.reject(createError(
-                'Invalid input',
-                400,
-                'validation_error',
-                'Validation Error',
-                error.details[0].message
-            ));
-        }
         
         const sql = `INSERT INTO users(id, username) VALUES (?, ?)`;
         const id = md5(`${username}${new Date().toString()}`);

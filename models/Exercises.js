@@ -4,11 +4,11 @@ const createError = require('../utils/createError');
 
 
 class Exercise {
-    constructor(description, duration, date = ''){
+    constructor(description, duration, date = null){
+        const exerciseDate = date ? new Date(date) : new Date();
         this.description = description;
         this.duration = duration;
-        // TODO: check for invalid date
-        this.date = date ? new Date(date).toDateString() : new Date().toDateString();
+        this.date = this.date = exerciseDate.toDateString();
     }
 }
 
@@ -22,7 +22,7 @@ class Exercises {
         const exercise = new Exercise(
             exerciseInfo.description, 
             exerciseInfo.duration, 
-            exerciseInfo.date??''
+            exerciseInfo.date??null
         );
         
         return new Promise((resolve, reject) => {

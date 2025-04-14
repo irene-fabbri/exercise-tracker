@@ -1,12 +1,27 @@
 const Users = require('../models/Users');
+const createError = require('../utils/createError');
+const { createUserSchema } = require('../validators/userValidator');
 
 class UserController {
 
     static async createUser(req, res, next) {
-        const { username } = req.body;
+        // Validate input. stripUnknown removes attribute in body that are not in the schema
+        const { error, value: username } = createUserSchema.validate(req.body, {
+            stripUnknown: true,
+          });
+        if (error) {
+          // Send a custom error to the error middleware
+          return next(createError(
+            'Validation Error',
+            400,
+            'validation_error',
+            'Invalid user data',
+            error.details[0].message
+          ));
+        }
 
         try {
-            const user = await Users.create(username);
+            const user = await Users.create(value.username);
             res.status(201).json(user);
         } catch (error) {
             next(error);
