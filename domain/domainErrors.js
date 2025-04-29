@@ -11,7 +11,7 @@ class InvalidDurationError extends DomainError {};
 class InvalidDateError extends DomainError {};
 class InvalidUsernameError extends DomainError {};
 
-module.exports = {
+export {
     DomainError,
     InvalidDescriptionError,
     InvalidDurationError,

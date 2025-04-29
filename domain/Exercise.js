@@ -1,8 +1,4 @@
-const {
-    InvalidDescriptionError,
-    InvalidDurationError,
-    InvalidDateError
-} = require('./domainErrors');
+import { InvalidDescriptionError, InvalidDurationError, InvalidDateError } from './domainErrors.js';
 
 class Exercise {
     constructor(description, duration, date = null){
@@ -60,3 +56,5 @@ class Exercise {
         return exerciseDate;
     }
 }
+
+export { Exercise };

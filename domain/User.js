@@ -1,6 +1,4 @@
-const {
-    InvalidUsernameError
-} = require('./domainErrors');
+import { InvalidUsernameError } from './domainErrors.js';
 
 class User {
     constructor( username ){
@@ -28,3 +26,5 @@ class User {
         return trimmedUsername;
     }
 }
+
+export { User };
