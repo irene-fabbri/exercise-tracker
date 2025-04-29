@@ -1,5 +1,4 @@
-// validators/exerciseValidator.js
-const Joi = require('joi');
+import Joi from 'joi';
 
 const createExerciseSchema = Joi.object({
   description: Joi.string()
@@ -27,6 +26,4 @@ const createExerciseSchema = Joi.object({
     })
 });
 
-module.exports = {
-  createExerciseSchema,
-};
+export { createExerciseSchema };

@@ -1,4 +1,4 @@
-const Joi = require('joi');
+import Joi from 'joi';
 
 const createUserSchema = Joi.object({
   username: Joi.string()
@@ -15,4 +15,4 @@ const createUserSchema = Joi.object({
     })
 });
 
-module.exports =  {createUserSchema};
+export { createUserSchema };

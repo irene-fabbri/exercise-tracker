@@ -1,6 +1,6 @@
-const Exercises = require('../models/Exercises');
-const createError = require('../utils/createError');
-const { createExerciseSchema } = require('../validators/exerciseValidator');
+import { Exercises } from '../models/Exercises.js';
+import { createError } from '../utils/createError.js';
+import { createExerciseSchema } from '../validators/exerciseValidator.js';
 
 class ExerciseController {
 
@@ -42,4 +42,4 @@ class ExerciseController {
 
 }
 
-module.exports = ExerciseController;
+export { ExerciseController };

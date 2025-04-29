@@ -1,4 +1,4 @@
-const createError = require('../utils/createError');
+import { createError } from '../utils/createError.js';
 
 
 class Exercise {
@@ -29,7 +29,6 @@ class Exercises {
         this.findByUser = findByUser(db);
     }
 }
-module.exports = Exercises;
 
 // così ho la possibilità di passare un mock database e testare findByUser
 const findByUser = (db) => (userId) =>  {
@@ -56,7 +55,7 @@ const findByUser = (db) => (userId) =>  {
 
 // TODO: exercise -> Exercise object
 const create = (db) => (exercise, userId) => {
-    const exercise = new Exercise(
+    const currentExercise = new Exercise(
         exercise.description, 
         exercise.duration, 
         exercise.date??null
@@ -77,3 +76,5 @@ const create = (db) => (exercise, userId) => {
         });
     });
 }
+
+export { Exercises };

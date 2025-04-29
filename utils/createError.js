@@ -7,4 +7,4 @@ function createError(message, status = 500, code = 'internal_error', title = 'In
     return error;
 }
 
-module.exports = createError;
+export { createError };

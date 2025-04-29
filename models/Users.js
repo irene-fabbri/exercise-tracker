@@ -1,6 +1,6 @@
-const DB = require('../config/connect');
-const md5 = require('js-md5');
-const createError = require('../utils/createError');
+import { DB } from '../config/connect.js';
+import md5 from 'js-md5';
+import { createError } from '../utils/createError.js';
 
 
 class Users {
@@ -96,4 +96,4 @@ class Users {
     }
 }
 
-module.exports = Users;
+export { Users };

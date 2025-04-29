@@ -13,4 +13,4 @@ function errorHandler(error, req, res, next) {
     res.status(status).json(response);
 }
 
-module.exports = errorHandler;
+export { errorHandler };

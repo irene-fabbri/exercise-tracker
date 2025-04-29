@@ -1,4 +1,4 @@
-const sqlite3 = require('sqlite3').verbose();
+import sqlite3 from 'sqlite3';
 
 const DB = new sqlite3.Database('./exercises.db', sqlite3.OPEN_READWRITE, connected);
 
@@ -14,4 +14,4 @@ const DB = new sqlite3.Database('./exercises.db', sqlite3.OPEN_READWRITE, connec
         console.log('Connected to the DB');
     }
 
-module.exports = DB;
+export { DB };

@@ -1,17 +1,17 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const userController = require('../controllers/userController');
-const exerciseController = require('../controllers/exerciseController');
+import { UserController } from '../controllers/userController.js';
+import { ExerciseController } from '../controllers/exerciseController.js';
 
 // /api/users
-router.get('/users', userController.getAllUsers)  
-router.post('/users', userController.createUser);
+router.get('/users', UserController.getAllUsers)  
+router.post('/users', UserController.createUser);
 
 // /api/users/:_id/exercises
 
-router.post('/users/:id/exercises', exerciseController.createExercise);
+router.post('/users/:id/exercises', ExerciseController.createExercise);
 // /api/users/:_id/logs
 
-router.get('/users/:id/logs', exerciseController.getLogs);
+router.get('/users/:id/logs', ExerciseController.getLogs);
 
-module.exports = router;
+export { router as apiRoutes };

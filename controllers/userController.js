@@ -1,6 +1,6 @@
-const Users = require('../models/Users');
-const createError = require('../utils/createError');
-const { createUserSchema } = require('../validators/userValidator');
+import { Users } from '../models/Users.js';
+import { createError } from '../utils/createError.js';
+import { createUserSchema } from '../validators/userValidator.js';
 
 class UserController {
 
@@ -49,4 +49,4 @@ class UserController {
     }
 }
 
-module.exports = UserController;
+export { UserController };

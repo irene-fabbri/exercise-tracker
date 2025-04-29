@@ -1,4 +1,7 @@
-module.exports = {
-    Users: require('./Users.js'),
-    Exercises: require('./Exercises.js')
+import { Users } from './Users.js';
+import { Exercises } from './Exercises.js';
+
+export {
+    Users,
+    Exercises
 }
