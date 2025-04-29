@@ -2,6 +2,7 @@
   "name": "exercise-tracker",
   "version": "1.0.0",
   "description": "Exercise Tracker",
+  "type": "module",
   "main": "server.js",
   "scripts": {
     "test": "jest",
