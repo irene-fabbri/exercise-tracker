@@ -1,29 +1,44 @@
 import { InvalidUsernameError } from './domainErrors.js';
+import { md5 } from 'js-md5';
 
 class User {
-    constructor( username ){
+    constructor( username, userId = null){
+
         this.username = this.#checkUsername(username);
+        this.userId = this.#checkUserId(userId);
+
     }
     
     #checkUsername(username) {
         if (! username) {
-            throw new InvalidUsernameError('Username is required')
+            throw new InvalidUsernameError('Username is required');
         }
 
         if ( typeof username !== 'string') {
-            throw new InvalidUsernameError('Username MUST be a String')
+            throw new InvalidUsernameError('Username MUST be a String');
         }
 
-        const trimmedUsername = username.trim()
+        const trimmedUsername = username.trim();
         if ( trimmedUsername.length < 3) {
-            throw new InvalidUsernameError('Username must be at least 3 characters long, excluding empty trailing and ending spaces')
+            throw new InvalidUsernameError('Username must be at least 3 characters long, excluding empty trailing and ending spaces');
         }
 
         if ( trimmedUsername.length > 30) {
-            throw new InvalidUsernameError('Username cannot be longer than 30 characters')
+            throw new InvalidUsernameError('Username cannot be longer than 30 characters');
         }
 
         return trimmedUsername;
+    }
+
+    #checkUserId(userId) {
+        if ( !userId ) {
+            return md5(`${this.username}${new Date().toString()}`);
+        }
+
+        const idPattern = /^[a-fA-F0-9]{32}$/;
+        if (!idPattern.test(userId)) {
+            throw new Error('Invalid ID: must be a valid MD5 hash');
+        }
     }
 }
 
