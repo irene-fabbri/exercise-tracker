@@ -1,2 +1,3 @@
 node_modules/
-exercises.db
+infrasttructure/database/exercises.db
+infrasttructure/database/mock_exercise_tracker.sql
