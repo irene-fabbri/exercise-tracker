@@ -1,10 +1,6 @@
-class DomainError extends Error {
-    constructor(message) {
-        super(message);
-        this.name = this.constructor.name;
-        Error.captureStackTrace(this, this.constructor);
-    }
-}
+import { MyError } from '../utils/myError.js';
+
+class DomainError extends MyError {};
 
 class InvalidDescriptionError extends DomainError {};
 class InvalidDurationError extends DomainError {};
