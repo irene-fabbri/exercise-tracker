@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "Exercise Tracker",
   "type": "module",
-  "main": "server.js",
+  "main": "infrastructure/server.js",
   "scripts": {
     "test": "jest",
-    "start": "node server.js"
+    "start": "node infrastructure/server.js"
   },
   "repository": {
     "type": "git",
