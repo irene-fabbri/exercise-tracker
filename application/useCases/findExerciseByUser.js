@@ -1,4 +1,5 @@
 import { Exercise } from '../../domain/Exercise.js';
+import { UserId } from '../../domain/UserId.js';
 import { ExerciseUseCaseError } from '../applicationErrors.js';
 
 class FindExerciseByUserIdService {

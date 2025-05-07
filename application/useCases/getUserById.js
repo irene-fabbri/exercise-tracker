@@ -1,15 +1,10 @@
 import { User } from '../../domain/User.js';
+import { UserId } from '../../domain/UserId.js';
 import { UserUseCaseError } from '../applicationErrors.js';
 
 class GetUserByIdService {
     constructor(userRepository) {
         this.userRepository = userRepository;
-    }
-
-    #validate(id) {
-        if (!id || typeof id !== 'string') {
-            throw new UserUseCaseError('Missing or wrongly fromatted fields: id');
-        };    
     }
 
     async execute(id) {
