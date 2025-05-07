@@ -6,17 +6,17 @@ class FindExerciseByUserIdService {
         this.exerciseRepository = exerciseRepository;
     }
 
-    #validate(id) {
-        if (!id || typeof id !== 'string') {
-            throw new UserUseCaseError('Missing or wrongly fromatted fields: id');
-        };    
-    }
-
     async execute(id) {
-        this.#validate(id);
+        let userId;
+        try {
+            userId = new UserId(id);
+        } catch (error) {
+            console.error('Invalid user id', error)
+            throw new ExerciseUseCaseError('Invalid UserId', { cause: error });
+        }
 
         try {
-            const result = await this.exerciseRepository.findByUserId(id);
+            const result = await this.exerciseRepository.findByUserId(userId);
             const resultMap = result.map(row => new Exercise(row.description, row.duration, row.date));
             return resultMap;
         }

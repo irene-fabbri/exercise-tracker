@@ -21,7 +21,7 @@ class CreateExerciseService {
                 exercise.description,
                 exercise.duration,
                 exercise.date
-            );    
+            );
         }
         catch (error) {
             console.error('Invalid exercise data', error);
@@ -29,8 +29,8 @@ class CreateExerciseService {
         }
 
         try {
-            const result = await this.exerciseRepository.create(newExercise, userId);
-            return new Exercise(result.description,result.duration, result.date);
+            const resultingExercise = await this.exerciseRepository.create(newExercise, userId);
+            return resultingExercise;
         }
         catch (error) {
             console.error('Exercise creation failed:', error);

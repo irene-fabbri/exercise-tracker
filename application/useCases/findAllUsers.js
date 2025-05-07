@@ -8,9 +8,8 @@ class FindAllUsersService {
 
     async execute() {
         try {
-            const result = await this.userRepository.findAll();
-            const resultMap = result.map(row => new User(row.username, row.userId));
-            return resultMap;
+            const userList = await this.userRepository.findAll();
+            return userList;
         }
         catch (error) {
             console.error('User findAll failed:', error);

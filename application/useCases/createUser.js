@@ -6,27 +6,12 @@ class CreateUserService {
         this.userRepository = userRepository;
     }
 
-    #validate(user) {
-        if (!user || !user.username) {
-            throw new UserUseCaseError('Missing required fields: username.');
-        };    
-    }
-
-    async execute(user) {
-        this.#validate(user);
-
-        let newUser;
-        try {
-            newUser = new User( user.username );    
-        }
-        catch (error) {
-            console.error('Invalid user data', error);
-            throw new UserUseCaseError('Invalid user data', { cause: error });
-        }
+    async execute(username) {
 
         try {
-            const result = await userRepository.create(newUser);
-            return new User(result.username, result.userId);
+            const user = new User( username );
+            const savedUser = await userRepository.create(user);
+            return savedUser;
         }
         catch (error) {
             console.error('User creation failed:', error);

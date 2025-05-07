@@ -14,13 +14,18 @@ class GetUserByIdService {
 
     async execute(id) {
         
-        this.#validate(id);
+        let userId;
+        try {
+            userId = new UserId(id);
+        } catch (error) {
+            console.error('Invalid user id', error)
+            throw new UserUseCaseError('Invalid UserId', { cause: error });
+        }
 
         try {
             const result = await this.userRepository.getUserById(id);
             return new User(result.username, result.userId);
-        }
-        catch (error) {
+        } catch (error) {
             console.error('User getUserById failed:', error);
             throw new UserUseCaseError('Error getting user by id', { cause: error });
         }

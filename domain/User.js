@@ -1,12 +1,15 @@
 import { InvalidUsernameError } from './domainErrors.js';
-import { md5 } from 'js-md5';
+import { UserId } from './UserId.js';
 
 class User {
     constructor( username, userId = null){
 
         this.username = this.#checkUsername(username);
-        this.userId = this.#checkUserId(userId);
-
+        this.userId = userId instanceof UserId
+        ? userId
+        : userId
+            ? new UserId(userId)
+            : UserId.generateFrom(this.username);
     }
     
     #checkUsername(username) {
