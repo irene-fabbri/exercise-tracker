@@ -6,11 +6,17 @@ class CreateUserService {
         this.userRepository = userRepository;
     }
 
-    async execute(username) {
-
+    async execute(user) {
+        let newUser;
         try {
-            const user = new User( username );
-            const savedUser = await userRepository.create(user);
+            newUser = new User(user.username, user.userId);
+        }
+        catch (error) {
+            console.error('Invalid user data', error);
+            throw new UserUseCaseError('Invalid user data', { cause: error });
+        }
+        try {
+            const savedUser = await this.userRepository.create(user);
             return savedUser;
         }
         catch (error) {
