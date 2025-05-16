@@ -1,10 +1,11 @@
-import { CreateExerciseService } from '../../../application/useCases/createExercise.js';
-import { GetUserByIdService } from '../../../application/useCases/getUserById.js';
+import { createExerciseService } from '../../../config/dependencies.js';
+import { findExerciseByUserIdService } from '../../../config/dependencies.js';
+import { getUserByIdService } from '../../../config/dependencies.js';
+
 import { Exercise } from '../../../domain/Exercise.js';
 import { UserId } from '../../../domain/UserId.js';
-import { Exercises } from '../models/Exercises.js';
+import { NotFoundError, ValidationError } from '../HTTPErrors.js';
 import { formatExerciseResponse, formatLogsResponse } from '../presenters/exercisePresenter.js';
-import { createError } from '../utils/createError.js';
 
 class ExerciseController {
 
@@ -15,13 +16,7 @@ class ExerciseController {
             userId = new UserId(req.params.id);
         } catch (error) {
             console.error('Invalid user id', error)
-            return next(createError(
-                'Invlid parameters: id',
-                400,
-                'validation_error',
-                'Invalid user id',
-                error.details[0].message
-              ));
+            return next( new ValidationError('Invalid parameters: id', error.details?.[0]?.message || error.message, error) );
         }
         
         // Validate input: exercise
@@ -31,32 +26,20 @@ class ExerciseController {
         } catch (error) 
         {
             console.error('Invalid exercise parameters', error)
-            return next(createError(
-                'Invalid parameters: exercise',
-                400,
-                'validation_error',
-                'Invalid exercise data',
-                error.details[0].message
-              ));
+            return next( new ValidationError('Invalid parameters: username', error.details?.[0]?.message || error.message, error) );
         }
 
         // find corrisponding user
         let user;
         try{
-            user = await GetUserByIdService(userId);
+            user = await getUserByIdService.execute(userId);
         } catch (error) {
-            console.error('User not found', error)
-            return next(createError(
-                'Invalid parameters: userId',
-                400,
-                'validation_error',
-                'Invalid userId data',
-                error.details[0].message
-              ));
+            console.error('User not found', error);
+            return next( new NotFoundError('User not found', error.details?.[0]?.message || error.message, error) );
         }
 
         try {
-            const savedExercise = await CreateExerciseService(newExercise, userId);
+            const savedExercise = await createExerciseService.execute(newExercise, userId);
             const formatted = formatExerciseResponse(savedExercise, user);
             res.status(201).json(formatted);
         } catch (error) {
@@ -71,32 +54,20 @@ class ExerciseController {
             userId = new UserId(req.params.id);
         } catch (error) {
             console.error('Invalid user id', error)
-            return next(createError(
-                'Invlid parameters: id',
-                400,
-                'validation_error',
-                'Invalid user id',
-                error.details[0].message
-            ));
+            return next( new ValidationError('Invalid parameters: username', error.details?.[0]?.message || error.message, error) );
         }
             
         // find corrisponding user
         let user;
         try{
-            user = await GetUserByIdService(userId);
+            user = await getUserByIdService.execute(userId);
         } catch (error) {
             console.error('User not found', error)
-            return next(createError(
-                'Invalid parameters: userId',
-                400,
-                'validation_error',
-                'Invalid userId data',
-                error.details[0].message
-            ));
+            return next( new NotFoundError('User not found', error.details?.[0]?.message || error.message, error) );
         }
 
         try {
-            const userLogs = await Exercises.findByUser(userId);
+            const userLogs = await findExerciseByUserIdService.execute(userId);
             const formatted = formatLogsResponse(user, userLogs)
             res.status(200).json(formatted);
         } catch (error) {

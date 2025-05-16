@@ -3,31 +3,32 @@ import { DatabaseAccessError, DatabaseError } from './databaseErrors';
 
 class DBManager {
     constructor() {
-        this.db = null;
+        this.database = null;
     }
 
     // Initialize the DB connection only once
-    async initDb() {
-        if (this.db) return this.db;    
+    async initializeDatabase() {
+        if (this.database) return this.database;    
         return new Promise((resolve, reject) => {
-            this.db = new sqlite3.Database('./exercises.db', sqlite3.OPEN_READWRITE, (error) => {
+            this.database = new sqlite3.Database('./exercises.db', sqlite3.OPEN_READWRITE, (error) => {
                 if (error) {
                     console.error('Database connection failed:', error);
                     return reject(new DatabaseAccessError('Database connection failed', { code: error.code, cause: error }));
                 }
                 console.log('Connected to the DB');
-                resolve(this.db);
+                resolve(this.database);
             });
         });
     }
 
-    getDb() {
-        return this.db;
+    // get the connection
+    getDatabase() {
+        return this.database;
     }
     
-    async closeDb() {
-        if (this.db) {
-            this.db.close((error) => {
+    async closeDatabase() {
+        if (this.database) {
+            this.database.close((error) => {
                 if (error) {
                     console.error('Error closing database:', error);
                     throw new DatabaseError('Error closing the database', { code: error.code, cause: error });

@@ -3,7 +3,7 @@ import cors from 'cors';
 
 import { apiRoutes } from './routes/api.js';
 import { errorHandler } from './middleware/errorHandler.js';
-import { createError } from './utils/createError.js';
+import { NotFoundError } from './HTTPErrors.js';
 
 const app = express ();
 
@@ -15,12 +15,7 @@ app.use('/api', apiRoutes);
 
 // Catch all invalid routes
 app.use((req, res, next) => {
-    next(createError(
-        'Route not found',
-        404,
-        'not_found',
-        'Not Found'
-    ));
+    next( new NotFoundError('Route not found') );
 });
 
 app.use(errorHandler);
