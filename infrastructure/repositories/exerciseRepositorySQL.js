@@ -1,50 +1,80 @@
 import { dbManager } from "../database/dbManager.js";
 import { Exercise } from "../../domain/Exercise.js";
 import { ExerciseRepository } from "../../application/repositories/exerciseRepository.js";
-import { DatabaseCreateError, DatabaseReadError } from "../database/databaseErrors.js";
+import {
+  DatabaseCreateError,
+  DatabaseReadError,
+} from "../database/databaseErrors.js";
 
 class ExerciseRepositorySQL extends ExerciseRepository {
-    constructor() {
-        super();
-    }
+  constructor() {
+    super();
+  }
 
-    async create(exercise, userId) {
-        const db = await dbManager.getDb(); 
-        const sql = `INSERT INTO exercises(description, duration, date,userId) VALUES (?, ?, ?, ?)`;
+  async create(exercise, userId) {
+    const db = await dbManager.getDatabase();
+    const sql = `INSERT INTO exercises(description, duration, date,userId) VALUES (?, ?, ?, ?)`;
 
-        return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
+      db.run(
+        sql,
+        [
+          exercise.description,
+          exercise.duration,
+          exercise.date.toDateString(),
+          userId.toString(),
+        ],
+        (error) => {
+          if (error) {
+            console.error("Error creating exercise", error);
+            return reject(
+              new DatabaseCreateError("Error creating exercise", {
+                code: error.code,
+                cause: error,
+              })
+            );
+          }
 
-            db.run(sql, [exercise.description, exercise.duration, exercise.date.toDateString(), userId] , (error)=>{
-                if(error){
-                    console.error('Error creating exercise', error)
-                    return reject(new DatabaseCreateError('Error creating exercise', { code: error.code, cause: error}));
-                }
+          resolve(exercise);
+        }
+      );
+    });
+  }
 
-                resolve(exercise);
-            });
-        });
-    }
+  async findByUserId(userId) {
+    const db = await dbManager.getDatabase();
+    const sql = `SELECT * FROM exercises WHERE userId = ?`;
 
-    async findByUserId(userId) {
-        const db = await dbManager.getDb();
-        const sql = `SELECT * FROM exercises WHERE userId = ?`;
-        return new Promise((resolve, reject) => {
-            db.all(sql, [userId], (error, rows) => {
-                if (error) {
-                    console.error('Error retreiving exercises', error)
-                    return reject(new DatabaseReadError('Error retreiving exercises', { code: error.code, cause: error}));
-                }
-    
-                // If no row is returned, the user doesn't exist
-                if (!row) {
-                    console.error('User not found', error)
-                    return reject(new DatabaseReadError('User not found', { code: error.code, cause: error}));
-                }
+    return new Promise((resolve, reject) => {
+      db.all(sql, [userId.toString()], (error, rows) => {
+        if (error) {
+          console.error("Error retreiving exercises", error);
+          return reject(
+            new DatabaseReadError("Error retreiving exercises", {
+              code: error.code,
+              cause: error,
+            })
+          );
+        }
+        // If no row is returned, the user doesn't exist
+        if (!rows) {
+          console.error("User not found", error);
+          return reject(
+            new DatabaseReadError("User not found", {
+              code: error.code,
+              cause: error,
+            })
+          );
+        }
 
-                resolve ( rows.map( row => new Exercise(row.description, row.duration, row.date) ) );
-            });
-        });
-    }
+        resolve(
+          rows.map(
+            (row) => new Exercise(row.description, row.duration, row.date)
+          )
+        );
+      });
+    });
+  }
 }
 
-export { ExerciseRepositorySQL }
+export { ExerciseRepositorySQL };

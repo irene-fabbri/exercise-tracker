@@ -1,32 +1,32 @@
-import { md5 } from 'js-md5';
+import { md5 } from "js-md5";
 
 class UserId {
-    constructor(value) {
-        if (!value) {
-            throw new Error('UserId is required');
-        }
-
-        const pattern = /^[a-fA-F0-9]{32}$/;
-        if (!pattern.test(value)) {
-            throw new Error('UserId must be a valid 32-character MD5 hash');
-        }
-
-        this.value = value;
-        Object.freeze(this);
+  constructor(value) {
+    if (!value) {
+      throw new Error("UserId is required");
     }
 
-    static generateFrom(username) {
-        const id = md5(`${username}${new Date().toString()}`);
-        return new UserId(id);
+    const pattern = /^[a-fA-F0-9]{32}$/;
+    if (!pattern.test(value)) {
+      throw new Error("UserId must be a valid 32-character MD5 hash");
     }
 
-    toString() {
-        return this.value;
-    }
+    this.value = value;
+    Object.freeze(this);
+  }
 
-    equals(other) {
-        return other instanceof UserId && other.value === this.value;
-    }
+  static generateFrom(username) {
+    const id = md5(`${username}${new Date().toString()}`);
+    return new UserId(id);
+  }
+
+  toString() {
+    return this.value.toString();
+  }
+
+  equals(other) {
+    return other instanceof UserId && other.value === this.value;
+  }
 }
 
 export { UserId };
