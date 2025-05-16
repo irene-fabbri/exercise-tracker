@@ -9,10 +9,13 @@ class HTTPError extends MyError {
     detail = null,
     options = {}
   ) {
+    const rootCause = getRootCause(options.cause);
+    const finalDetail = rootCause?.message || detail || message;
+
     super(message, { cause: options.cause, code });
     this.status = status;
     this.title = title;
-    this.detail = detail || message;
+    this.detail = finalDetail;
   }
 }
 
