@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "description": "Exercise Tracker",
   "type": "module",
-  "main": "server.js",
+  "main": "dist/server.js",
   "scripts": {
     "test": "jest",
-    "start": "node server.js"
+    "start": "node dist/server.js",
+    "build": "tsc",
+    "serve": "node dist/server.js"
   },
   "repository": {
     "type": "git",
@@ -26,5 +28,12 @@
     "js-md5": "^0.8.3",
     "sqlite3": "^5.1.7",
     "supertest": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.18",
+    "@types/express": "^5.0.2",
+    "@types/node": "^22.15.21",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
   }
 }
