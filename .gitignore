@@ -1,2 +1,9 @@
 node_modules/
-exercises.db
+src/infrastructure/database/exercises.db
+src/infrastructure/database/mock_exercise_tracker.sql
+
+src/infrastructure/database/exercises.db
+src/infrastructure/database/mock_exercise_tracker.sql
+
+dist/infrastructure/database/exercises.db
+provaTS.ts.txt
