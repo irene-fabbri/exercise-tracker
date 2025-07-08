@@ -1,2 +1,0 @@
-// Abstract Exercise Repository
-export {};

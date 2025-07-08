@@ -1,12 +1,18 @@
 # 🏋️ Exercise Tracker API
 
-This is a modular, layered REST API for tracking users and their workout exercises. It is built with **TypeScript** and **Express**, and follows principles of Clean Architecture and Domain-Driven Design.
+This is a modular, layered REST API for tracking users and their workout exercises. Built with **TypeScript** and **Express**, it follows principles of **Clean Architecture** and **Domain-Driven Design**. The project is designed for extensibility, testability, and maintainability, and demonstrates patterns suitable for microservices.
 
-### Features:
+---
 
-- **Create Users**: Allows users to create accounts.
-- **Log Exercises**: Users can log exercises with descriptions, durations, and optional dates.
-- **Get Exercise Logs**: Retrieve a user's exercise log with all entries.
+## ✨ Features
+
+- **Create Users:** Register new users with unique usernames.
+- **Log Exercises:** Users can log exercises with descriptions, durations, and optional dates.
+- **Get Exercise Logs:** Retrieve a user's exercise log with all entries, supporting filters.
+- **Clean/Hexagonal Architecture:** Clear separation between domain, application, and infrastructure layers.
+- **Repository Pattern:** Easily switch between different data sources (SQLite, MongoDB, etc.).
+- **Comprehensive Testing:** Includes unit and integration tests with Jest and Supertest.
+- **Error Handling:** Consistent, JSON-formatted error responses.
 
 ---
 
@@ -19,7 +25,7 @@ This is a modular, layered REST API for tracking users and their workout exercis
 │   ├── application/       # Use cases and interfaces
 │   │   ├── repositories/
 │   │   └── useCases/
-│   ├── config/            # Dependency injection
+│   ├── config/            # Dependency injection and app config
 │   ├── domain/            # Core business logic (Entities, Value Objects)
 │   ├── infrastructure/    # External concerns (DB, Web)
 │   │   ├── database/
@@ -30,9 +36,10 @@ This is a modular, layered REST API for tracking users and their workout exercis
 │   │       ├── presenters/
 │   │       └── routes/
 │   └── utils/             # Shared utilities
+├── __tests__/             # Jest/Supertest test suites
+├── sqliteDb/              # SQLite database and schema
 ├── tsconfig.json
 ├── package.json
-├── package-lock.json
 ├── LICENSE
 └── README.md
 ```
@@ -44,8 +51,8 @@ This is a modular, layered REST API for tracking users and their workout exercis
 ### 1. Clone the Repository
 
 ```bash
-git clone <your-repo-url>
-cd <your-project-directory>
+git clone https://github.com/irene-fabbri/exercise-tracker.git
+cd exercise-tracker
 ```
 
 ### 2. Install Dependencies
@@ -65,6 +72,12 @@ Or build and run:
 ```bash
 npm run build
 npm start
+```
+
+### 4. Run Tests
+
+```bash
+npm test
 ```
 
 ---
@@ -194,11 +207,15 @@ Errors are returned with appropriate status codes and JSON format.
 ## 🧠 Design Principles
 
 - **Domain-Driven Design (DDD)**
-- **Clean Architecture**
+- **Clean/Hexagonal Architecture**
 - **Separation of Concerns** between domain, application, infrastructure, and interface layers
+- **Repository Pattern** for data access abstraction
+- **Testability** with isolated unit and integration tests
 
 ---
 
 ## 📄 License
 
 This project is licensed under the **MIT License**.
+
+---

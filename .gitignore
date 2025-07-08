@@ -1,8 +1,7 @@
 node_modules/
-dist/
 sqliteDb/
 src/config/configprova.ts
-dist/infrastructure/database/exercises.db
+dist/
 provaTS.ts.txt
 .env
 playground.js
