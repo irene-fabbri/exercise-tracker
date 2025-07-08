@@ -2,7 +2,7 @@ import { Description } from "./Description.js";
 import { Duration } from "./Duration.js";
 import { ExerciseDate } from "./ExerciseDate.js";
 import { Identifier } from "./Identifier.ts";
-import { GymBud } from "./User.ts";
+import { GymBud } from "./Account.ts";
 
 class ExerciseId extends Identifier {
   private constructor(value: string) {

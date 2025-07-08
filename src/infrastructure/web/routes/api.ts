@@ -1,34 +1,33 @@
-import express, { NextFunction, Request, Response, response } from "express";
-import {
-  getExerciseController,
-  getUserController,
-} from "../../../config/dependencies.ts";
-const router = express.Router();
+// api.ts
+import express, { NextFunction, Request, Response } from "express";
+import { AccountController } from "../controllers/accountController.ts";
+import { ExerciseController } from "../controllers/exerciseController.ts";
 
-// /api/users
-router.get(
-  "/users",
-  (request: Request, response: Response, next: NextFunction) =>
-    getUserController().findAllUsers(request, response, next)
-);
-router.post(
-  "/users",
-  (request: Request, response: Response, next: NextFunction) =>
-    getUserController().createUser(request, response, next)
-);
+export function createApiRoutes(
+  accountController: AccountController,
+  exerciseController: ExerciseController
+) {
+  const router = express.Router();
 
-// /api/users/:_id/exercises
-router.post(
-  "/users/:id/exercises",
-  (request: Request, response: Response, next: NextFunction) =>
-    getExerciseController().createExercise(request, response, next)
-);
+  router.get("/users", (req: Request, res: Response, next: NextFunction) =>
+    accountController.findAllAccounts(req, res, next)
+  );
 
-// /api/users/:_id/logs
-router.get(
-  "/users/:id/logs",
-  (request: Request, response: Response, next: NextFunction) =>
-    getExerciseController().getLogs(request, response, next)
-);
+  router.post("/users", (req: Request, res: Response, next: NextFunction) =>
+    accountController.createAccount(req, res, next)
+  );
 
-export { router as apiRoutes };
+  router.post(
+    "/users/:id/exercises",
+    (req: Request, res: Response, next: NextFunction) =>
+      exerciseController.createExercise(req, res, next)
+  );
+
+  router.get(
+    "/users/:id/logs",
+    (req: Request, res: Response, next: NextFunction) =>
+      exerciseController.getLogs(req, res, next)
+  );
+
+  return router;
+}

@@ -4,7 +4,7 @@ class ApplicationError extends MyError {}
 
 class RepositoryError extends ApplicationError {}
 class ExerciseUseCaseError extends ApplicationError {}
-class NoUsersFoundError extends ApplicationError {
+class NoAccountsFoundError extends ApplicationError {
   constructor() {
     super(`The user list is empty`);
   }
@@ -16,15 +16,15 @@ class NoExercisesFoundError extends ApplicationError {
   }
 }
 
-class UserAlreadyExists extends ApplicationError {
-  constructor(userId: string) {
-    super(`User '${userId}' already exists`);
+class AccountAlreadyExists extends ApplicationError {
+  constructor(id: string) {
+    super(`Account '${id}' already exists`);
   }
 }
 
-class UserNotFoundError extends ApplicationError {
-  constructor(userId: string) {
-    super(`No User matching the id '${userId}'`);
+class AccountNotFoundError extends ApplicationError {
+  constructor(id: string) {
+    super(`No Account matching the id '${id}'`);
   }
 }
 
@@ -32,8 +32,8 @@ export {
   ApplicationError,
   RepositoryError,
   ExerciseUseCaseError,
-  NoUsersFoundError,
+  NoAccountsFoundError,
   NoExercisesFoundError,
-  UserAlreadyExists,
-  UserNotFoundError,
+  AccountAlreadyExists,
+  AccountNotFoundError,
 };

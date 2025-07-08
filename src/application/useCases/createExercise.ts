@@ -1,17 +1,13 @@
-import { Description } from "../../domain/Description.js";
-import { Duration } from "../../domain/Duration.js";
 import { Exercise } from "../../domain/Exercise.js";
-import { ExerciseDate } from "../../domain/ExerciseDate.js";
-import { AccountId, GymBud } from "../../domain/User.ts";
-import { UserId } from "../../domain/UserId.js";
-import { UserNotFoundError } from "../applicationErrors.js";
+import { AccountId, GymBud } from "../../domain/Account.ts";
+import { AccountNotFoundError } from "../applicationErrors.js";
 import { ExerciseRepository } from "../repositories/exerciseRepository.js";
-import { UserRepository } from "../repositories/userRepository.js";
+import { AccountRepository } from "../repositories/accountRepository.ts";
 
 class CreateExerciseService {
   constructor(
     private exerciseRepository: ExerciseRepository,
-    private userRepository: UserRepository
+    private accountRepository: AccountRepository
   ) {}
 
   async execute(
@@ -21,22 +17,20 @@ class CreateExerciseService {
     userIdAsString: string
   ): Promise<Exercise> {
     // Verify the userId is correct
-    const exerciseUserId = AccountId.fromString(userIdAsString);
+    const exerciseAccountId = AccountId.fromString(userIdAsString);
     // Verify an user with that id exists
-    const gymbud = (await this.userRepository.findById(
-      exerciseUserId
-    )) as GymBud;
+    const gymbud = await this.accountRepository.findById(exerciseAccountId);
     if (!gymbud) {
-      throw new UserNotFoundError(exerciseUserId.value);
+      throw new AccountNotFoundError(exerciseAccountId.value);
     }
     const exercise = Exercise.create(
       descriptionAsString,
       durationAsNumber,
-      gymbud,
+      gymbud as GymBud,
       dateAsString
     );
 
-    await this.exerciseRepository.create(exercise, exerciseUserId);
+    await this.exerciseRepository.create(exercise);
 
     return exercise;
   }

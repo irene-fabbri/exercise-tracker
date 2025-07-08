@@ -1,11 +1,13 @@
 // Abstract Exercise Repository
 
 import { Exercise } from "../../domain/Exercise.js";
-import { AccountId } from "../../domain/User.js";
+import { AccountId, GymBud } from "../../domain/Account.ts";
+import { Entity } from "../../domain/Entity.ts";
+import { EntityRepository } from "./EntityRepository.ts";
 
-interface ExerciseRepository {
-  create(exercise: Exercise, userId: AccountId): Promise<void>;
-  findByUserId(userId: AccountId): Promise<Exercise[] | null>;
+interface ExerciseRepository extends EntityRepository<Exercise> {
+  create(exercise: Exercise): Promise<void>;
+  findByAccount(gymbud: GymBud): Promise<Exercise[] | null>;
 }
 
-export { ExerciseRepository };
+export type { ExerciseRepository };

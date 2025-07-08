@@ -1,18 +1,18 @@
 import { Exercise } from "../../../domain/Exercise.js";
-import { User } from "../../../domain/User.js";
+import { GymBud } from "../../../domain/Account.ts";
 
-const formatExerciseResponse = (exercise: Exercise, user: User) => ({
-  username: user.username.value,
+const formatExerciseResponse = (exercise: Exercise, gymbud: GymBud) => ({
+  username: gymbud.username.value,
   description: exercise.description.value,
   duration: exercise.duration.value,
   date: exercise.date.value.toDateString(),
-  _id: user.id.value,
+  _id: gymbud.id.value,
 });
 
-const formatLogsResponse = (user: User, logs: Exercise[]) => ({
-  username: user.username.value,
+const formatLogsResponse = (gymbud: GymBud, logs: Exercise[]) => ({
+  username: gymbud.username.value,
   count: logs.length,
-  _id: user.id.value,
+  _id: gymbud.id.value,
   log: logs.map((log) => ({
     description: log.description,
     duration: log.duration,

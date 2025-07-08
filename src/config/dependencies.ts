@@ -1,57 +1,114 @@
-// import DataBase
-import { dbManager } from "../infrastructure/database/dbManager.js";
-// Import user and exercise SQLite repositories
-import { UserRepositorySQL } from "../infrastructure/repositories/userRepositorySQL.ts";
-import { ExerciseRepositorySQL } from "../infrastructure/repositories/exerciseRepositorySQL.ts";
-// Import services
-import { CreateUserService } from "../application/useCases/createUser.ts";
-import { CreateExerciseService } from "../application/useCases/createExercise.ts";
-import { FindAllUsersService } from "../application/useCases/findAllUsers.ts";
-import { FindUserByIdService } from "../application/useCases/findUserById.ts";
-import { FindExerciseByUserIdService } from "../application/useCases/findExerciseByUser.ts";
-import { UserController } from "../infrastructure/web/controllers/userController.ts";
+import sqlite3 from "sqlite3";
+import {
+  DatabaseAccessError,
+  DatabaseConfigError,
+} from "../infrastructure/database/databaseErrors.ts";
+import { MongoDbManager } from "../infrastructure/database/MongoDbManager.ts";
+import { MongoDbAccountRepository } from "../infrastructure/repositories/MongoDbAccountRepository.ts";
+import { MongoDbExerciseRepository } from "../infrastructure/repositories/MongoDbExerciseRepository.ts";
+import { Db } from "mongodb";
+import { DBManagerRepository } from "../application/repositories/dbManagerRepository.ts";
+import { AccountRepository } from "../application/repositories/accountRepository.ts";
+import { ExerciseRepository } from "../application/repositories/exerciseRepository.ts";
+import { AccountController } from "../infrastructure/web/controllers/accountController.ts";
 import { ExerciseController } from "../infrastructure/web/controllers/exerciseController.ts";
+import { Config, MongoDbConfig } from "./config.ts";
+import { SqliteDbManager } from "../infrastructure/database/SqliteDbManager.ts";
+import { SqliteAccountRepository } from "../infrastructure/repositories/SqliteAccountRepository.ts";
+import { SqliteExerciseRepository } from "../infrastructure/repositories/SqliteExerciseRepository.ts";
+import { FindAllAccountsService } from "../application/useCases/findAllAccounts.ts";
+import { FindAccountByIdService } from "../application/useCases/findAccountById.ts";
+import { CreateAccountService } from "../application/useCases/createAccount.ts";
+import { CreateExerciseService } from "../application/useCases/createExercise.ts";
+import { FindExerciseByAccountIdService } from "../application/useCases/findExerciseByAccount.ts";
+import { SqliteConfig } from "./configprova.ts";
 
-let userController: UserController;
-let exerciseController: ExerciseController;
+interface Dependencies {
+  accountRepository: AccountRepository;
+  exerciseRepository: ExerciseRepository;
+  accountController: AccountController;
+  exerciseController: ExerciseController;
+}
 
-async function initializeDependencies(): Promise<void> {
-  //Initialize database
-  await dbManager.initializeDatabase();
-
-  // Instantiate repository with database
-  const userRepository = new UserRepositorySQL();
-  const exerciseRepository = new ExerciseRepositorySQL();
+async function initializeDependencies(config: Config): Promise<Dependencies> {
+  const { accountRepository, exerciseRepository } = await createRepositories(
+    config
+  );
 
   // Inject into use cases
-  const findAllUsersService = new FindAllUsersService(userRepository);
-  const findUserByIdService = new FindUserByIdService(userRepository);
-  const createUserService = new CreateUserService(userRepository);
+  const findAllAccountsService = new FindAllAccountsService(accountRepository);
+  const findAccountByIdService = new FindAccountByIdService(accountRepository);
+  const createAccountService = new CreateAccountService(accountRepository);
   const createExerciseService = new CreateExerciseService(
     exerciseRepository,
-    userRepository
+    accountRepository
   );
-  const findExerciseByUserIdService = new FindExerciseByUserIdService(
-    exerciseRepository
+  const findExerciseByAccountIdService = new FindExerciseByAccountIdService(
+    exerciseRepository,
+    accountRepository
   );
 
   // Inject into controllers
-  userController = new UserController(createUserService, findAllUsersService);
-  exerciseController = new ExerciseController(
-    createExerciseService,
-    findUserByIdService,
-    findExerciseByUserIdService
+  const accountController = new AccountController(
+    createAccountService,
+    findAllAccountsService
   );
-}
-// Export a function to get the initialized controllers
-function getUserController(): UserController {
-  if (!userController) throw new Error("Dependencies not initialized");
-  return userController;
+
+  const exerciseController = new ExerciseController(
+    createExerciseService,
+    findAccountByIdService,
+    findExerciseByAccountIdService
+  );
+  return {
+    accountRepository,
+    exerciseRepository,
+    accountController,
+    exerciseController,
+  };
 }
 
-function getExerciseController(): ExerciseController {
-  if (!exerciseController) throw new Error("Dependencies not initialized");
-  return exerciseController;
+interface RepositoryBundle {
+  dbManager: DBManagerRepository<sqlite3.Database | Db>;
+  accountRepository: AccountRepository;
+  exerciseRepository: ExerciseRepository;
 }
 
-export { initializeDependencies, getUserController, getExerciseController };
+async function createRepositories(config: Config): Promise<RepositoryBundle> {
+  let dbManager: DBManagerRepository<sqlite3.Database | Db>;
+  let db: sqlite3.Database | Db;
+  let accountRepository: AccountRepository;
+  let exerciseRepository: ExerciseRepository;
+
+  switch (config.database.type) {
+    case "sqlite":
+      dbManager = new SqliteDbManager(
+        config.database as SqliteConfig
+      ) as DBManagerRepository<sqlite3.Database>;
+
+      //Initialize database
+      await dbManager.initializeDatabase();
+      db = dbManager.getDatabase() as sqlite3.Database;
+
+      if (!db) throw new DatabaseAccessError("SQLite DB not initialized");
+      accountRepository = new SqliteAccountRepository(db);
+      exerciseRepository = new SqliteExerciseRepository(db);
+      break;
+    case "mongodb":
+      dbManager = new MongoDbManager(
+        config.database as MongoDbConfig
+      ) as DBManagerRepository<Db>;
+      await dbManager.initializeDatabase();
+      db = dbManager.getDatabase() as Db;
+
+      if (!db) throw new DatabaseAccessError("MongoDb DB not initialized");
+
+      accountRepository = new MongoDbAccountRepository(db);
+      exerciseRepository = new MongoDbExerciseRepository(db);
+      break;
+    default:
+      throw new DatabaseConfigError(`Unsupported DB_TYPE: ${config.database}`);
+  }
+  return { dbManager, accountRepository, exerciseRepository };
+}
+
+export { initializeDependencies };

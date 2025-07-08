@@ -1,19 +1,19 @@
 import { NextFunction, Request, Response } from "express";
 import { CreateExerciseService } from "../../../application/useCases/createExercise.js";
-import { FindExerciseByUserIdService } from "../../../application/useCases/findExerciseByUser.js";
+import { FindExerciseByAccountIdService } from "../../../application/useCases/findExerciseByAccount.ts";
 
 import { NotFoundError, ValidationError } from "../HTTPErrors.js";
 import {
   formatExerciseResponse,
   formatLogsResponse,
 } from "../presenters/exercisePresenter.js";
-import { FindUserByIdService } from "../../../application/useCases/findUserById.js";
+import { FindAccountByIdService } from "../../../application/useCases/findAccountById.ts";
 
 class ExerciseController {
   constructor(
     public createExerciseService: CreateExerciseService,
-    public findUserByIdService: FindUserByIdService,
-    public findExerciseByUserIdService: FindExerciseByUserIdService
+    public findAccountByIdService: FindAccountByIdService,
+    public findExerciseByAccountIdService: FindExerciseByAccountIdService
   ) {}
 
   async createExercise(
@@ -38,8 +38,8 @@ class ExerciseController {
       const date: string | null = request.body.date || null;
       const userId = request.params.id;
 
-      const user = await this.findUserByIdService.execute(userId);
-      if (!user) {
+      const account = await this.findAccountByIdService.execute(userId);
+      if (!account) {
         throw new NotFoundError(`No user found with id '${userId}'`);
       }
 
@@ -50,7 +50,7 @@ class ExerciseController {
         userId
       );
 
-      const formatted = formatExerciseResponse(newExercise, user);
+      const formatted = formatExerciseResponse(newExercise, account);
       response.status(201).json(formatted);
     } catch (error) {
       // to catch unexpected errors
@@ -60,16 +60,18 @@ class ExerciseController {
 
   async getLogs(request: Request, response: Response, next: NextFunction) {
     try {
-      const userId = request.params.id;
+      const accountId = request.params.id;
       // find corrisponding user
-      const user = await this.findUserByIdService.execute(userId);
-      if (!user) {
-        throw new NotFoundError(`No user found with id '${userId}'`);
+      const account = await this.findAccountByIdService.execute(accountId);
+      if (!account) {
+        throw new NotFoundError(`No account found with id '${accountId}'`);
       }
 
-      const userLogs = await this.findExerciseByUserIdService.execute(userId);
-      const formatted = formatLogsResponse(user, userLogs);
-      response.status(200).json(formatted);
+      const accountLogs = await this.findExerciseByAccountIdService.execute(
+        accountId
+      );
+      const formattedLogs = formatLogsResponse(account, accountLogs);
+      response.status(200).json(formattedLogs);
     } catch (error) {
       next(error);
     }

@@ -34,9 +34,9 @@ class InvalidUsernameError extends InvalidField {
   }
 }
 
-class InvalidUserId extends InvalidField {
+class InvalidAccountId extends InvalidField {
   constructor() {
-    super(`UserId must be a valid 32-character MD5 hash`);
+    super(`AccountId must be a valid UUID v4 string`);
   }
 }
 
@@ -47,5 +47,5 @@ export {
   InvalidDurationError,
   InvalidDateError,
   InvalidUsernameError,
-  InvalidUserId,
+  InvalidAccountId,
 };

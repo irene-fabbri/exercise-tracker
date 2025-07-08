@@ -3,7 +3,8 @@ class MyError extends Error {
     super(message);
     this.name = new.target.name;
     // Set the prototype explicitly to maintain the correct prototype chain
-    Object.setPrototypeOf(this, MyError.prototype);
+    Object.setPrototypeOf(this, new.target.prototype);
+    console.error(`${this.name}: ${message}`);
   }
 }
 

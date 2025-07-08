@@ -1,9 +1,8 @@
 node_modules/
-src/infrastructure/database/exercises.db
-src/infrastructure/database/mock_exercise_tracker.sql
-
-src/infrastructure/database/exercises.db
-src/infrastructure/database/mock_exercise_tracker.sql
-
+dist/
+sqliteDb/
+src/config/configprova.ts
 dist/infrastructure/database/exercises.db
 provaTS.ts.txt
+.env
+playground.js

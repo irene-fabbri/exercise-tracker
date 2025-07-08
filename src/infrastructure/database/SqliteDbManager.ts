@@ -2,23 +2,28 @@ import sqlite3 from "sqlite3";
 sqlite3.verbose();
 import {
   DatabaseAccessError,
+  DatabaseConfigError,
   DatabaseError,
   DatabaseInitializationError,
-} from "./databaseErrors.js";
-import path from "path";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
+} from "./databaseErrors.ts";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const dbPath = path.join(__dirname, "exercises.db");
+import { DBManagerRepository } from "../../application/repositories/dbManagerRepository.ts";
+import { SqliteConfig } from "../../config/config.ts";
 
-class DBManager {
+class SqliteDbManager implements DBManagerRepository<sqlite3.Database> {
   private database: sqlite3.Database | null = null;
+  constructor(private config: SqliteConfig) {}
 
   // Initialize the DB connection only once
   async initializeDatabase(): Promise<sqlite3.Database> {
+    if (this.config.type !== "sqlite") {
+      throw new DatabaseConfigError();
+    }
+
+    const dbPath = this.config.path;
+
     if (this.database) return this.database;
+
     return new Promise<sqlite3.Database>((resolve, reject) => {
       this.database = new sqlite3.Database(
         dbPath,
@@ -33,7 +38,7 @@ class DBManager {
 
           if (!this.database) return reject(new DatabaseInitializationError());
 
-          console.log("Connected to the DB");
+          console.log("Connected to the Sqlite DB");
           resolve(this.database);
         }
       );
@@ -53,14 +58,14 @@ class DBManager {
             console.error("Error closing database:", error);
             return reject(new DatabaseError("Error closing the database"));
           }
+          this.database = null;
           console.log("Database connection closed");
           resolve();
         });
       });
     }
+    console.log("Database connection is closed already");
   }
 }
 
-const dbManager = new DBManager();
-
-export { dbManager };
+export { SqliteDbManager };

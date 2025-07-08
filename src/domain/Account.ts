@@ -1,6 +1,7 @@
+import { InvalidAccountId } from "./domainErrors.ts";
+import { Entity } from "./Entity.ts";
 import { Identifier } from "./Identifier.ts";
-import { UserId } from "./UserId.js";
-import { Username } from "./Username.js";
+import { Username } from "./Username.ts";
 
 class AccountId extends Identifier {
   private constructor(value: string) {
@@ -12,24 +13,24 @@ class AccountId extends Identifier {
   }
   // for account id read from databases
   static fromString(id: string) {
+    if (!Identifier.isValid(id)) {
+      throw new InvalidAccountId();
+    }
+
     return new AccountId(id);
   }
 }
 
-class Account {
-  constructor(
-    public readonly id: AccountId,
-    public readonly username: Username
-  ) {}
+class Account extends Entity {
+  constructor(id: AccountId, public readonly username: Username) {
+    super(id);
+  }
 }
 
 class GymManager extends Account {}
 class GymBud extends Account {}
 
 type User = GymBud | GymManager;
-// Class User to be DELETED
-// class User {
-//   constructor(public readonly id: UserId, public readonly username: Username) {}
-// }
 
-export { User, GymBud, GymManager, AccountId, Account };
+export { GymBud, GymManager, AccountId, Account };
+export type { User };
